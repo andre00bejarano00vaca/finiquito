@@ -35,14 +35,13 @@ export default function FormularioDatos() {
     const fecha2 = dayjs(formData.FechadeFin);
   
     if (fecha1.isValid() && fecha2.isValid()) {
-      const diff = fecha2.diff(fecha1);
-      const duration = dayjs.duration(diff);
+      const años = fecha2.diff(fecha1, "year");
+      const fechaIntermedia = fecha1.add(años, "year");
+      const meses = fecha2.diff(fechaIntermedia, "month");
+      const fechaIntermedia2 = fechaIntermedia.add(meses, "month");
+      const días = fecha2.diff(fechaIntermedia2, "day");
   
-      setFechas({
-        años: duration.years(),
-        meses: duration.months(),
-        días: duration.days(),
-      });
+      setFechas({ años, meses, días });
     }
   
     console.log("Estado actualizado:", fechas);
@@ -208,6 +207,7 @@ export default function FormularioDatos() {
         Remuneracion Ultimos Tres Meses
       </h2>
       <div className="grid grid-cols-3 gap-4 text-center">
+        <input type="number" placeholder=""/>
         <div className="bg-green-200 p-4 rounded-lg text-black">
           Mes 1: <span className="font-bold text-black">0</span>
         </div>
