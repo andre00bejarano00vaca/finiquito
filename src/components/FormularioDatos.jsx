@@ -25,6 +25,9 @@ export default function FormularioDatos() {
     mes1: 0,
     mes2: 0,
     mes3: 0,
+    fechaMes1:"",
+    fechaMes2:"",
+    fechaMes3:"",
     promedio: 0,
     totales: 0,
   });
@@ -232,34 +235,63 @@ export default function FormularioDatos() {
         </div>
       </div>
 
+      {/* ESTA PARTE SE ENCRGA DE LAS FECHAS */}
       <h2 className="text-2xl font-bold mt-6 mb-4 text-black">
         Remuneracion Ultimos Tres Meses
       </h2>
       <div className="grid grid-cols-3 gap-4 text-center">
+        <div>
+        <input
+            name="fechaMes1"
+            value={meses.fechaMes1}
+            onChange={handleChange2}
+            type="date"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
         <input
           name="mes1"
           value={meses.mes1} 
           onChange={handleChange2}
           type="number"
           placeholder="Mes 1:"
-          className="bg-green-200 !bg-green-200 p-4 rounded-lg text-black"
+          className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
         />
+        </div>
+        <div>
+        <input
+            name="fechaMes2"
+            value={meses.fechaMes2}
+            onChange={handleChange2}
+            type="date"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
         <input
           name="mes2"
           value={meses.mes2} 
           onChange={handleChange2}
           type="number"
           placeholder="Mes 2:"
-          className="bg-green-200 !bg-green-200 p-4 rounded-lg text-black"
+          className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
         />
+        </div>
+        <div>
+        <input
+            name="fechaMes3"
+            value={meses.fechaMes3}
+            onChange={handleChange2}
+            type="date"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
         <input
           name="mes3"
           value={meses.mes3 } 
           onChange={handleChange2}
           type="number"
           placeholder="Mes 3:"
-          className="bg-green-200 !bg-green-200 p-4 rounded-lg text-black"
+          className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
         />
+        </div>
+        
       </div>
 
       <div className="grid grid-cols-2 gap-4 text-center m-5">
