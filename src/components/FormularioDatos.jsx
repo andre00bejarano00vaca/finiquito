@@ -21,6 +21,13 @@ export default function FormularioDatos() {
     FechadeFin: "",
   });
   const [fechas, setFechas] = useState({ años: 0, meses: 0, días: 0 });
+  const [meses, setMeses] = useState({
+    mes1: 0,
+    mes2: 0,
+    mes3: 0,
+    promedio: 0,
+    totales: 0,
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,23 +37,45 @@ export default function FormularioDatos() {
     }));
   };
 
+  const handleChange2 = (e) => {
+    const { name, value } = e.target;
+    setMeses((prevFormData) => ({
+      ...prevFormData,
+      [name]: value === "" ? "" : Number(value),
+        }));
+  };
+
   useEffect(() => {
     const fecha1 = dayjs(formData.FechadeInicio);
     const fecha2 = dayjs(formData.FechadeFin);
-  
+
     if (fecha1.isValid() && fecha2.isValid()) {
       const años = fecha2.diff(fecha1, "year");
       const fechaIntermedia = fecha1.add(años, "year");
       const meses = fecha2.diff(fechaIntermedia, "month");
       const fechaIntermedia2 = fechaIntermedia.add(meses, "month");
       const días = fecha2.diff(fechaIntermedia2, "day");
-  
+
       setFechas({ años, meses, días });
     }
-  
+
     console.log("Estado actualizado:", fechas);
     console.log(formData);
   }, [formData]);
+
+  useEffect(() => {
+    setMeses((prev) => {
+      const { mes1 = 0, mes2 = 0, mes3 = 0 } = prev;
+  
+      if (mes1 > 0 && mes2 > 0 && mes3 > 0) {
+        const promedio = ((mes1 + mes2 + mes3) / 3).toFixed(2);
+        const totales = mes1 + mes2 + mes3;
+        return { ...prev, promedio, totales }; // ✅ Mantiene el estado previo y actualiza solo los nuevos valores
+      }
+  
+      return prev; // ✅ Evita actualizar el estado innecesariamente
+    });
+  }, [meses.mes1, meses.mes2, meses.mes3]); // ✅ Solo se ejecuta cuando cambia mes1, mes2 o mes3
   
 
   return (
@@ -207,15 +236,38 @@ export default function FormularioDatos() {
         Remuneracion Ultimos Tres Meses
       </h2>
       <div className="grid grid-cols-3 gap-4 text-center">
-        <input type="number" placeholder=""/>
+        <input
+          name="mes1"
+          value={meses.mes1} 
+          onChange={handleChange2}
+          type="number"
+          placeholder="Mes 1:"
+          className="bg-green-200 !bg-green-200 p-4 rounded-lg text-black"
+        />
+        <input
+          name="mes2"
+          value={meses.mes2} 
+          onChange={handleChange2}
+          type="number"
+          placeholder="Mes 2:"
+          className="bg-green-200 !bg-green-200 p-4 rounded-lg text-black"
+        />
+        <input
+          name="mes3"
+          value={meses.mes3 } 
+          onChange={handleChange2}
+          type="number"
+          placeholder="Mes 3:"
+          className="bg-green-200 !bg-green-200 p-4 rounded-lg text-black"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 text-center m-5">
         <div className="bg-green-200 p-4 rounded-lg text-black">
-          Mes 1: <span className="font-bold text-black">0</span>
+          Promedio: <span className="font-bold text-black">{meses.promedio}</span>
         </div>
         <div className="bg-green-200 p-4 rounded-lg text-black">
-          Mes 2: <span className="font-bold text-black">0</span>
-        </div>
-        <div className="bg-green-200 p-4 rounded-lg text-black">
-          Mes 3: <span className="font-bold text-black">0</span>
+          Totales: <span className="font-bold text-black">{meses.totales}</span>
         </div>
       </div>
 
