@@ -3,34 +3,36 @@
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+dayjs.extend(duration);
 
 export default function FormularioDatos() {
-  dayjs.extend(duration);
 
   const [formData, setFormData] = useState({
     razonSocial: "",
     domicilioEmpresa: "",
-    NombreTrabajador: "",
-    DomicilioTrabajador: "",
-    EstadoCivil: "",
-    FechadeNacimiento: "",
-    Profesión: "",
-    MotivodelRetiro: "",
-    RemuneraciónMensual: "",
-    FechadeInicio: "",
-    FechadeFin: "",
+    nombreTrabajador: "",
+    domicilioTrabajador: "",
+    estadoCivil: "",
+    fechaNacimiento: "",
+    profesion: "",
+    motivoRetiro: "",
+    remuneracionMensual: "",
+    fechaInicio: "",
+    fechaFin: "",
   });
   const [fechas, setFechas] = useState({ años: 0, meses: 0, días: 0 });
   const [meses, setMeses] = useState({
     mes1: 0,
     mes2: 0,
     mes3: 0,
-    fechaMes1:"",
-    fechaMes2:"",
-    fechaMes3:"",
     promedio: 0,
     totales: 0,
   });
+  const [fechaMes,setFechaMes] = useState({
+    fechaMes1: "",
+    fechaMes2: "",
+    fechaMes3: "",
+  })
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,13 +46,21 @@ export default function FormularioDatos() {
     const { name, value } = e.target;
     setMeses((prevFormData) => ({
       ...prevFormData,
-      [name]: value === "" ? "" : Number(value),
-        }));
+      [name]: value === "" ? 0 : Number(value),
+    }));
+  };
+
+  const handleChange3 = (e) =>{
+    const { name, value } = e.target;
+    setFechaMes((prevFormData) => ({
+      ...prevFormData,
+      [name]: value ,
+    }));
   };
 
   useEffect(() => {
-    const fecha1 = dayjs(formData.FechadeInicio);
-    const fecha2 = dayjs(formData.FechadeFin);
+    const fecha1 = dayjs(formData.fechaInicio);
+    const fecha2 = dayjs(formData.fechaFin);
 
     if (fecha1.isValid() && fecha2.isValid()) {
       const años = fecha2.diff(fecha1, "year");
@@ -64,21 +74,19 @@ export default function FormularioDatos() {
 
     console.log("Estado actualizado:", fechas);
     console.log(formData);
-  }, [formData]);
+  }, [formData.fechaInicio, formData.fechaFin]);
+  
 
   useEffect(() => {
-    setMeses((prev) => {
-      const { mes1 = 0, mes2 = 0, mes3 = 0 } = prev;
+    const { mes1, mes2, mes3 } = meses;
   
-      if (mes1 > 0 && mes2 > 0 && mes3 > 0) {
-        const promedio = ((mes1 + mes2 + mes3) / 3).toFixed(2);
-        const totales = mes1 + mes2 + mes3;
-        return { ...prev, promedio, totales }; // ✅ Mantiene el estado previo y actualiza solo los nuevos valores
-      }
+    if (mes1 > 0 && mes2 > 0 && mes3 > 0) {
+      const promedio = ((mes1 + mes2 + mes3) / 3).toFixed(2);
+      const totales = mes1 + mes2 + mes3;
   
-      return prev; // ✅ Evita actualizar el estado innecesariamente
-    });
-  }, [meses.mes1, meses.mes2, meses.mes3]); // ✅ Solo se ejecuta cuando cambia mes1, mes2 o mes3
+      setMeses((prev) => ({ ...prev, promedio: Number(promedio), totales }));
+    }
+  }, [meses.mes1, meses.mes2, meses.mes3]);
   
 
   return (
@@ -93,7 +101,7 @@ export default function FormularioDatos() {
             onChange={handleChange}
             type="text"
             placeholder="Empresa Ejemplo S.R.L."
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
           />
         </label>
         <label className="block">
@@ -110,8 +118,8 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Nombre Trabajador</span>
           <input
-            name="NombreTrabajador"
-            value={formData.NombreTrabajador}
+            name="nombreTrabajador"
+            value={formData.nombreTrabajador}
             onChange={handleChange}
             type="text"
             placeholder="Juan Perez"
@@ -121,8 +129,8 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Domicilio Trabajador</span>
           <input
-            name="DomicilioTrabajador"
-            value={formData.DomicilioTrabajador}
+            name="domicilioTrabajador"
+            value={formData.domicilioTrabajador}
             onChange={handleChange}
             type="text"
             placeholder="av. San martin # 350"
@@ -132,8 +140,8 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Estado Civil</span>
           <select
-            name="EstadoCivil"
-            value={formData.EstadoCivil}
+            name="estadoCivil"
+            value={formData.estadoCivil}
             onChange={handleChange}
             id="estadoCivil"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
@@ -147,8 +155,8 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Fecha de Nacimiento</span>
           <input
-            name="FechadeNacimiento"
-            value={formData.FechadeNacimiento}
+            name="fechaNacimiento"
+            value={formData.fechaNacimiento}
             onChange={handleChange}
             type="date"
             placeholder="1976-06-04"
@@ -156,10 +164,10 @@ export default function FormularioDatos() {
           />
         </label>
         <label className="block">
-          <span className="text-gray-700">Profesión</span>
+          <span className="text-gray-700">profesion</span>
           <input
-            name="Profesión"
-            value={formData.Profesión}
+            name="profesion"
+            value={formData.profesion}
             onChange={handleChange}
             type="text"
             placeholder="Ing. Comercial"
@@ -169,9 +177,9 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Motivo del Retiro</span>
           <select
-            value={formData.MotivodelRetiro}
+            value={formData.motivoRetiro}
             onChange={handleChange}
-            name="MotivodelRetiro"
+            name="motivoRetiro"
             id="Motivo-del-Retiro"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
           >
@@ -184,8 +192,8 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Remuneración Mensual</span>
           <input
-            name="RemuneraciónMensual"
-            value={formData.RemuneraciónMensual}
+            name="remuneracionMensual"
+            value={formData.remuneracionMensual}
             onChange={handleChange}
             type="number"
             placeholder="8000"
@@ -201,8 +209,8 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Fecha de Inicio</span>
           <input
-            name="FechadeInicio"
-            value={formData.FechadeInicio}
+            name="fechaInicio"
+            value={formData.fechaInicio}
             onChange={handleChange}
             type="date"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
@@ -211,8 +219,8 @@ export default function FormularioDatos() {
         <label className="block">
           <span className="text-gray-700">Fecha de Fin</span>
           <input
-            name="FechadeFin"
-            value={formData.FechadeFin}
+            name="fechaFin"
+            value={formData.fechaFin}
             onChange={handleChange}
             type="date"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
@@ -239,67 +247,123 @@ export default function FormularioDatos() {
       <h2 className="text-2xl font-bold mt-6 mb-4 text-black">
         Remuneracion Ultimos Tres Meses
       </h2>
-      <div className="grid grid-cols-3 gap-4 text-center">
+      <div className="grid md:grid-cols-3 md:grid-rows-1 grid-rows-3  gap-4 text-center">
         <div>
-        <input
-            name="fechaMes1"
-            value={meses.fechaMes1}
+          <label className="block">
+            <span className="text-gray-700">Antepenultimo mes</span>
+            <input
+              name="fechaMes1"
+              value={fechaMes.fechaMes1}
+              onChange={handleChange3}
+              type="date"
+              className="mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            />
+          </label>
+          <input
+            name="mes1"
+            value={meses.mes1}
             onChange={handleChange2}
-            type="date"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            type="number"
+            placeholder="Mes 1:"
+            className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
           />
-        <input
-          name="mes1"
-          value={meses.mes1} 
-          onChange={handleChange2}
-          type="number"
-          placeholder="Mes 1:"
-          className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
-        />
         </div>
         <div>
-        <input
-            name="fechaMes2"
-            value={meses.fechaMes2}
+          <label className="block">
+            <span className="text-gray-700">Penultimo mes</span>
+            <input
+              name="fechaMes2"
+              value={fechaMes.fechaMes2}
+              onChange={handleChange3}
+              type="date"
+              className="mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            />
+          </label>
+          <input
+            name="mes2"
+            value={meses.mes2}
             onChange={handleChange2}
-            type="date"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            type="number"
+            placeholder="Mes 2:"
+            className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
           />
-        <input
-          name="mes2"
-          value={meses.mes2} 
-          onChange={handleChange2}
-          type="number"
-          placeholder="Mes 2:"
-          className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
-        />
         </div>
         <div>
-        <input
-            name="fechaMes3"
-            value={meses.fechaMes3}
+          <label className="block">
+            <span className="text-gray-700">Ultimo mes</span>
+            <input
+              name="fechaMes3"
+              value={fechaMes.fechaMes3}
+              onChange={handleChange3}
+              type="date"
+              className="mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+              placeholder="14-02-2025"
+            />
+          </label>
+          <input
+            name="mes3"
+            value={meses.mes3}
             onChange={handleChange2}
-            type="date"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            type="number"
+            placeholder="Mes 3:"
+            className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
           />
-        <input
-          name="mes3"
-          value={meses.mes3 } 
-          onChange={handleChange2}
-          type="number"
-          placeholder="Mes 3:"
-          className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
-        />
         </div>
-        
       </div>
 
       <div className="grid grid-cols-2 gap-4 text-center m-5">
         <div className="bg-green-200 p-4 rounded-lg text-black">
-          Promedio: <span className="font-bold text-black">{meses.promedio}</span>
+          Promedio:{" "}
+          <span className="font-bold text-black">{meses.promedio}</span>
         </div>
         <div className="bg-green-200 p-4 rounded-lg text-black">
           Totales: <span className="font-bold text-black">{meses.totales}</span>
+        </div>
+      </div>
+
+      <h2 className="text-2xl font-bold mt-6 mb-4 text-black">
+        Total Remuneración Promedio Indemnizable
+      </h2>
+      <p className="text-2xl font-bold mt-6 mb-4 text-black">
+        Indepnización  por tiempo de trabajo</p>
+        <div className="grid grid-cols-3 grid-rows-3 text-center m-5">
+          {/*RESULTADO DE AÑO*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          <span className="font-bold text-black">{fechas.años}</span>
+        </div>
+          {/*TEXTO DE AÑO*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          AÑOS 
+        </div>
+          {/*CALCULO DE AÑO*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          Promedio:{" "}
+          <span className="font-bold text-black">{(meses.promedio)*(fechas.años)}</span>
+        </div>
+          {/*RESULTADO DE MESES*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          <span className="font-bold text-black">{fechas.meses}</span>
+        </div>
+          {/*TEXTO DE MESES*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          MESES
+        </div>
+          {/*CALCULO DE MESES*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+           <span className="font-bold text-black">{(meses.promedio /12).toFixed(2) *(fechas.meses)}</span>
+        </div>
+          {/*RESULTADO DE DIAS*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          <span className="font-bold text-black">{fechas.días}</span>
+        </div>
+          {/*TEXTO DE DIAS*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          DIAS
+        </div>
+          {/*RESULTADO DE DIAS*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          Promedio:{" "}
+          <span className="font-bold text-black">{(meses.promedio / 360).toFixed(2)*(fechas.días)}</span>
         </div>
       </div>
 
