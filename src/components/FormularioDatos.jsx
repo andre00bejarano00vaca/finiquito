@@ -325,7 +325,7 @@ export default function FormularioDatos() {
         Total Remuneración Promedio Indemnizable
       </h2>
       <p className="text-2xl font-bold mt-6 mb-4 text-black">
-        Indepnización  por tiempo de trabajo</p>
+        Indemnización  por tiempo de trabajo</p>
         <div className="grid grid-cols-3 grid-rows-3 text-center m-5">
           {/*RESULTADO DE AÑO*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
