@@ -39,6 +39,8 @@ export default function FormularioDatos() {
   });
 
   const [fechaVacaciones,setFechaVacaciones]= useState({
+    inicio:'',
+    final:'',
     diasTotales:0,
   });
   //handleChange/////////////////////////////////////
@@ -108,14 +110,15 @@ export default function FormularioDatos() {
   }, [fechas,meses.promedio]); // Se ejecuta cuando `fechas` cambia
 
   useEffect(()=>{
-    if((formData.fechaInicio !== undefined)&&(formData.fechaFin !==undefined)){
-      const fechaEnDias = calcularDiferenciaEnDias(formData.fechaInicio,formData.fechaFin)
+    if((fechaVacaciones.inicio !== undefined)&&(fechaVacaciones.final !==undefined)){
+      const fechaEnDias = (calcularDiferenciaEnDias(fechaVacaciones.inicio,fechaVacaciones.final)+1)
+      console.log(fechaEnDias)
       setFechaVacaciones((prevFormData) => ({
         ...prevFormData,
         diasTotales:fechaEnDias ,
       }));
     }
-  },[formData.fechaInicio,formData.fechaFin])
+  },[fechaVacaciones.inicio,fechaVacaciones.final])
   
 
   return (
@@ -416,26 +419,34 @@ export default function FormularioDatos() {
           <span className="font-bold text-black">{diasVaca}</span>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        <div className="block text-center">
-          <span className="text-gray-700">Fecha Inicio Sin vacaciones</span>
-          <div>
-          <span className="text-gray-900">{formData.fechaInicio}</span>
-          </div>
-        </div>
-        <div className="block text-center">
-          <span className="text-gray-700">Fecha de Final de vacaciones</span>
-          <div>
-          <span className="text-gray-900">{formData.fechaFin}</span>
-          </div>
-        </div>
+        <form className="grid grid-cols-3 gap-4">
+        <label className="block">
+          <span className="text-gray-700">Fecha de Inicio</span>
+          <input
+            name="inicio"
+            value={fechaVacaciones.inicio}
+            onChange={handleFechasVacaciones}
+            type="date"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
+        </label>
+        <label className="block">
+          <span className="text-gray-700">Fecha de Fin</span>
+          <input
+            name="final"
+            value={fechaVacaciones.final}
+            onChange={handleFechasVacaciones}
+            type="date"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
+        </label>
         <div className="block text-center">
           <span className="text-gray-700">Dias</span>
           <div>
           <span className="text-gray-900">{isNaN(fechaVacaciones.diasTotales) ? 0 : fechaVacaciones.diasTotales}</span>
           </div>
         </div>
-      </div>
+      </form>
       <span className="text-red-700">Calculo de dias acumulados</span>
       <div className="grid grid-cols-2">
   <span className="text-gray-700">DÍAS ACUMULADOS DE VACACIÓN (días)</span>
