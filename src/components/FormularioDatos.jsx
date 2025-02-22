@@ -3,9 +3,13 @@
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import diasVacaciones from "@/functions/diasVacaciones";
+import calcularDiferenciaEnDias from "@/functions/calcularDiferenciaEnDia";
 dayjs.extend(duration);
 
 export default function FormularioDatos() {
+  //ESTADOS /////////////////////////
+  const [diasVaca,setDiasVaca] = useState(0)
 
   const [formData, setFormData] = useState({
     razonSocial: "",
@@ -32,8 +36,12 @@ export default function FormularioDatos() {
     fechaMes1: "",
     fechaMes2: "",
     fechaMes3: "",
-  })
+  });
 
+  const [fechaVacaciones,setFechaVacaciones]= useState({
+    diasTotales:0,
+  });
+  //handleChange/////////////////////////////////////
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -57,7 +65,15 @@ export default function FormularioDatos() {
       [name]: value ,
     }));
   };
-
+  
+  const handleFechasVacaciones = (e) => {
+    const { name, value } = e.target;
+    setFechaVacaciones((prevFormData) => ({
+      ...prevFormData,
+      [name]: value ,
+    }));
+  }
+ // EFECTOS ////////////////////////////////////////////////////////
   useEffect(() => {
     const fecha1 = dayjs(formData.fechaInicio);
     const fecha2 = dayjs(formData.fechaFin);
@@ -71,9 +87,6 @@ export default function FormularioDatos() {
 
       setFechas({ años, meses, días });
     }
-
-    console.log("Estado actualizado:", fechas);
-    console.log(formData);
   }, [formData.fechaInicio, formData.fechaFin]);
   
 
@@ -87,6 +100,22 @@ export default function FormularioDatos() {
       setMeses((prev) => ({ ...prev, promedio: Number(promedio), totales }));
     }
   }, [meses.mes1, meses.mes2, meses.mes3]);
+
+  useEffect(() => {
+    if ((fechas.años !== undefined)&&(meses.promedio !==undefined)) {
+      setDiasVaca(diasVacaciones(fechas.años,meses.promedio));
+    }
+  }, [fechas,meses.promedio]); // Se ejecuta cuando `fechas` cambia
+
+  useEffect(()=>{
+    if((formData.fechaInicio !== undefined)&&(formData.fechaFin !==undefined)){
+      const fechaEnDias = calcularDiferenciaEnDias(formData.fechaInicio,formData.fechaFin)
+      setFechaVacaciones((prevFormData) => ({
+        ...prevFormData,
+        diasTotales:fechaEnDias ,
+      }));
+    }
+  },[formData.fechaInicio,formData.fechaFin])
   
 
   return (
@@ -337,7 +366,6 @@ export default function FormularioDatos() {
         </div>
           {/*CALCULO DE AÑO*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
-          Promedio:{" "}
           <span className="font-bold text-black">{(meses.promedio)*(fechas.años)}</span>
         </div>
           {/*RESULTADO DE MESES*/}
@@ -350,7 +378,7 @@ export default function FormularioDatos() {
         </div>
           {/*CALCULO DE MESES*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
-           <span className="font-bold text-black">{(meses.promedio /12).toFixed(2) *(fechas.meses)}</span>
+           <span className="font-bold text-black">{((meses.promedio /12) *(fechas.meses)).toFixed(2)}</span>
         </div>
           {/*RESULTADO DE DIAS*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
@@ -362,10 +390,81 @@ export default function FormularioDatos() {
         </div>
           {/*RESULTADO DE DIAS*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
-          Promedio:{" "}
-          <span className="font-bold text-black">{(meses.promedio / 360).toFixed(2)*(fechas.días)}</span>
+          <span className="font-bold text-black">{((meses.promedio / 360)*(fechas.días)).toFixed(2)}</span>
         </div>
       </div>
+
+      {/*Ultima parte............................ */}
+      <h2 className="text-2xl font-bold mt-6 mb-4 text-black">
+        Calculo de vacaciones
+      </h2>
+      <div className="grid grid-cols-2 grid-rows-2 text-center m-5">
+          {/*antiguedad*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          <span className="font-bold text-black">ANTIGUEDAD</span>
+        </div>
+          {/*Días Vacac.*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+        Días Vacac.
+        </div>
+          {/*MOSTRAR DE VACACIONES AÑO*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          <span className="font-bold text-black">{fechas.años}</span>
+        </div>
+          {/*RESULTADO DE DIAS PARA VACACIONES*/}
+        <div className="bg-green-200 p-4 border-2 border-black text-black">
+          <span className="font-bold text-black">{diasVaca}</span>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        <div className="block text-center">
+          <span className="text-gray-700">Fecha Inicio Sin vacaciones</span>
+          <div>
+          <span className="text-gray-900">{formData.fechaInicio}</span>
+          </div>
+        </div>
+        <div className="block text-center">
+          <span className="text-gray-700">Fecha de Final de vacaciones</span>
+          <div>
+          <span className="text-gray-900">{formData.fechaFin}</span>
+          </div>
+        </div>
+        <div className="block text-center">
+          <span className="text-gray-700">Dias</span>
+          <div>
+          <span className="text-gray-900">{isNaN(fechaVacaciones.diasTotales) ? 0 : fechaVacaciones.diasTotales}</span>
+          </div>
+        </div>
+      </div>
+      <span className="text-red-700">Calculo de dias acumulados</span>
+      <div className="grid grid-cols-2">
+  <span className="text-gray-700">DÍAS ACUMULADOS DE VACACIÓN (días)</span>
+  <span className="text-gray-700 text-center">
+    {Number.isFinite(fechaVacaciones?.diasTotales) && diasVaca > 0
+      ? (fechaVacaciones.diasTotales / (365 / diasVaca)).toFixed(2)
+      : "0"}
+  </span>
+</div>
+
+<div className="grid grid-cols-2">
+  <span className="text-gray-700">CÁLCULO DE SALARIO DIARIO (Bs)</span>
+  <span className="text-gray-700 text-center">
+    {Number.isFinite(Number(meses?.promedio)) 
+      ? (Number(meses.promedio) / 30).toFixed(2) 
+      : "0"}
+  </span>
+</div>
+
+<div className="grid grid-cols-2">
+  <span className="text-gray-700">VACACIONES POR PAGAR (Bs.)</span>
+  <span className="text-gray-700 text-center">
+    {Number.isFinite(Number(meses?.promedio)) && Number.isFinite(Number(fechaVacaciones?.diasTotales)) && diasVaca > 0
+      ? ((Number(fechaVacaciones.diasTotales) / (365 / diasVaca)) * (Number(meses.promedio) / 30)).toFixed(2)
+      : "0"}
+  </span>
+</div>
+<h1>hola como estas</h1>
+
 
       <button className="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
         Guardar Datos
