@@ -43,6 +43,12 @@ export default function FormularioDatos() {
     final:'',
     diasTotales:0,
   });
+  //aguinaldo
+  const [formData2, setFormData2] = useState({ meses: "", dias: "" });
+  const [aguinaldo, setAguinaldo] = useState(0);
+  //doble aguinaldo
+  const [dobleformData2, setDobleFormData2] = useState({ meses: "", dias: "" });
+  const [dobleaguinaldo, setDobleAguinaldo] = useState(0);
   //handleChange/////////////////////////////////////
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,6 +81,14 @@ export default function FormularioDatos() {
       [name]: value ,
     }));
   }
+  const handleAguinaldo = (e) => {
+    const { name, value } = e.target;
+    setFormData2((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleDobleAguinaldo = (e) => {
+    const { name, value } = e.target;
+    setDobleFormData2((prev) => ({ ...prev, [name]: value }));
+  };
  // EFECTOS ////////////////////////////////////////////////////////
   useEffect(() => {
     const fecha1 = dayjs(formData.fechaInicio);
@@ -120,6 +134,25 @@ export default function FormularioDatos() {
     }
   },[fechaVacaciones.inicio,fechaVacaciones.final])
   
+  useEffect(() => {
+    const mesesInput = parseFloat(formData2.meses) || 0;
+    const diasInput = parseFloat(formData2.dias) || 0;
+
+    const resultado =
+      (meses.promedio / 12) * mesesInput + (meses.promedio / 360) * diasInput;
+    
+    setAguinaldo(resultado.toFixed(2)); // Redondear a 2 decimales
+  }, [formData2.meses, formData2.dias, meses.promedio]);
+
+  useEffect(() => {
+    const mesesInput = parseFloat(dobleformData2.meses) || 0;
+    const diasInput = parseFloat(dobleformData2.dias) || 0;
+
+    const resultado =
+      (meses.promedio / 12) * mesesInput + (meses.promedio / 360) * diasInput;
+    
+    setDobleAguinaldo(resultado.toFixed(2)); // Redondear a 2 decimales
+  }, [dobleformData2.meses, dobleformData2.dias, meses.promedio]);
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -396,8 +429,54 @@ export default function FormularioDatos() {
           <span className="font-bold text-black">{((meses.promedio / 360)*(fechas.días)).toFixed(2)}</span>
         </div>
       </div>
+      <form className="grid grid-rows-2 gap-4">
+        <label className="grid grid-cols-4">
+          <span className="text-gray-700 grid place-items-center">Aguinaldo</span>
+          <input
+            name="meses"
+            value={formData2.meses}
+            onChange={handleAguinaldo}
+            type="number"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            placeholder="Meses"
+          />
+          <input
+            name="dias"
+            value={formData2.dias}
+            onChange={handleAguinaldo}
+            type="number"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            placeholder="dias"
+          />
+          <div className="bg-green-200 p-4  text-black">
+          <span className="font-bold text-black">{aguinaldo}</span>
+        </div>
+        </label>
+        <label className="grid grid-cols-4">
+          <span className="text-gray-700 grid place-items-center">Doble Aguinaldo</span>
+          <input
+            name="meses"
+            value={dobleformData2.meses}
+            onChange={handleDobleAguinaldo}
+            type="number"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            placeholder="Meses"
+          />
+          <input
+            name="dias"
+            value={dobleformData2.dias}
+            onChange={handleDobleAguinaldo}
+            type="number"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+            placeholder="dias"
+          />
+          <div className="bg-green-200 p-4 text-black">
+          <span className="font-bold text-black">{dobleaguinaldo}</span>
+        </div>
+        </label>
+      </form>
 
-      {/*Ultima parte............................ */}
+      {/*........................VACACIONESSSS............................ */}
       <h2 className="text-2xl font-bold mt-6 mb-4 text-black">
         Calculo de vacaciones
       </h2>
