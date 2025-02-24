@@ -89,6 +89,43 @@ export default function FormularioDatos() {
     const { name, value } = e.target;
     setDobleFormData2((prev) => ({ ...prev, [name]: value }));
   };
+  
+  const enviarDatos = async () => {
+    const datos = {
+      diasVaca,
+      formData,
+      fechas,
+      meses,
+      fechaMes,
+      fechaVacaciones,
+      formData2,
+      aguinaldo,
+      dobleformData2,
+      dobleaguinaldo,
+    };
+  
+    const response = await fetch("/api/modificarExcel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+  
+    if (!response.ok) {
+      console.error("Error al modificar el Excel");
+      return;
+    }
+  
+    // Convertir respuesta en Blob para descarga
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "archivo_modificado.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  
  // EFECTOS ////////////////////////////////////////////////////////
   useEffect(() => {
     const fecha1 = dayjs(formData.fechaInicio);
@@ -126,7 +163,6 @@ export default function FormularioDatos() {
   useEffect(()=>{
     if((fechaVacaciones.inicio !== undefined)&&(fechaVacaciones.final !==undefined)){
       const fechaEnDias = (calcularDiferenciaEnDias(fechaVacaciones.inicio,fechaVacaciones.final)+1)
-      console.log(fechaEnDias)
       setFechaVacaciones((prevFormData) => ({
         ...prevFormData,
         diasTotales:fechaEnDias ,
@@ -553,10 +589,9 @@ export default function FormularioDatos() {
       : "0"}
   </span>
 </div>
-<h1>hola como estas</h1>
 
 
-      <button className="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+      <button onClick={enviarDatos} className="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
         Guardar Datos
       </button>
     </div>
