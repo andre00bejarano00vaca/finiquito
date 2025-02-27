@@ -216,7 +216,7 @@ export default function FormularioDatos() {
       mesResultado:mesesR,
       diaResultado:diasR,
     })
-  },[meses,fechas])
+  },[meses.promedio,fechas])
 
   useEffect(() => {
     let cDias = 0;
