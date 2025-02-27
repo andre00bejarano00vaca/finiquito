@@ -46,7 +46,7 @@ export async function GET() {
 
 export async function POST(req) {
   try {
-    const { diasVaca, formData, fechas, meses, fechaMes, fechaVacaciones, formData2, aguinaldo, dobleformData2, dobleaguinaldo } = await req.json();
+    const { diasVaca, formData, fechas, meses, fechaMes, fechaVacaciones, formData2, aguinaldo, dobleformData2, dobleaguinaldo,fechasResultados,calculoVacaciones } = await req.json();
 
     // 📌 Ruta del archivo original
     const filePath = path.resolve("public", "PROYECTO_FINIQUITO (1).xlsx");
@@ -60,43 +60,66 @@ export async function POST(req) {
     const sheet = workbook.sheet(0); // Primera hoja
 
     // 📌 Modificar celdas con los datos recibidos
-    sheet.cell("B3").value(formData.razonSocial);
-    sheet.cell("B4").value(formData.domicilioEmpresa);
-    sheet.cell("B5").value(formData.nombreTrabajador);
-    sheet.cell("B6").value(formData.domicilioTrabajador);
-    sheet.cell("B7").value(formData.estadoCivil);
-    sheet.cell("B8").value(formData.fechaNacimiento);
-    sheet.cell("B9").value(formData.profesion);
-    sheet.cell("B10").value(formData.motivoRetiro);
-    sheet.cell("B11").value(formData.remuneracionMensual);
-    sheet.cell("B15").value(formData.fechaInicio);
-    sheet.cell("B16").value(formData.fechaFin);
+    sheet.range("V13:AL13").value(formData.razonSocial);
+    sheet.range("AE14:AN14").value(formData.domicilioEmpresa);
+    sheet.range("V15:AL15").value(formData.nombreTrabajador);
+    sheet.range("AG16:AN16").value(formData.domicilioTrabajador);
+    sheet.range("J16:T16").value(formData.estadoCivil);
+    //sheet.cell("B8").value(formData.fechaNacimiento);
+    sheet.range("N17:AL17").value(formData.profesion);
+    sheet.range("K19:U19").value(formData.motivoRetiro);
+    sheet.range("AJ19:AN19").value(formData.remuneracionMensual);
+    sheet.range("W18:AA18").value(formData.fechaInicio);
+    sheet.range("AJ18:AN18").value(formData.fechaFin);
+    sheet.range("D18:M18").value(formData.cedula);
+    sheet.range("Y16:Z16").value(formData.edad);
 
     // 📌 Modificar celdas de fechas y cálculos
-    sheet.cell("C14").value(fechas.años);
-    sheet.cell("C15").value(fechas.meses);
-    sheet.cell("C16").value(fechas.días);
+    sheet.range("K20:O20").value(fechas.años);
+    sheet.range("T20:W20").value(fechas.meses);
+    sheet.range("AB20:AE20").value(fechas.días);
+    // 📌 Modificar celdas de fechas y cálculos para vacaciones
+    sheet.range("V36:X36").value(fechas.años);
+    sheet.range("V37:X37").value(fechas.meses);
+    sheet.range("V38:X38").value(fechas.días);
+    // 📌 Modificar celdas de los calculos de los promedios año, mes y dia
+    sheet.range("AE36:AH36").value(fechasResultados.añoResultado);
+    sheet.range("AE37:AH37").value(fechasResultados.mesResultado);
+    sheet.range("AE38:AH38").value(fechasResultados.diaResultado);
 
     // 📌 Modificar meses y promedios
-    sheet.cell("C24").value(meses.mes1);
-    sheet.cell("D24").value(meses.mes2);
-    sheet.cell("E24").value(meses.mes3);
+    sheet.range("P25:T25").value(meses.mes1);
+    sheet.range("W25:AA25").value(meses.mes2);
+    sheet.range("AD25:AH25").value(meses.mes3);
+    sheet.range("AK25:AN25").value(meses.totales);
+    sheet.range("AK33:AO33").value(meses.promedio);
+    sheet.range("AK35:AN35").value(meses.totales);
+
+    sheet.range("AK43:AN43").value(0);
+
 
     // 📌 Modificar fechas de los meses
-    sheet.cell("C23").value(fechaMes.fechaMes1);
-    sheet.cell("D23").value(fechaMes.fechaMes2);
-    sheet.cell("E23").value(fechaMes.fechaMes3);
+    sheet.range("N24:T24").value(fechaMes.fechaMes1);
+    sheet.range("U24:AA24").value(fechaMes.fechaMes2);
+    sheet.range("AB24:AH24").value(fechaMes.fechaMes3);
 
     // 📌 Modificar vacaciones
     sheet.cell("B48").value(fechaVacaciones.inicio);
     sheet.cell("B49").value(fechaVacaciones.final);
+    sheet.cell("B49").value(diasVaca);
 
     // 📌 Modificar aguinaldo y doble aguinaldo
-    sheet.cell("C34").value(formData2.meses);
-    sheet.cell("E34").value(formData2.dias);
+    sheet.range("V39:X39").value(formData2.meses);
+    sheet.range("AC39:AE39").value(formData2.dias);
+    sheet.range("AK39:AN39").value(aguinaldo);
 
-    sheet.cell("C35").value(dobleformData2.meses);
-    sheet.cell("E35").value(dobleformData2.dias);
+    sheet.range("V40:X40").value(dobleformData2.meses);
+    sheet.range("AC40:AE40").value(dobleformData2.dias);
+    sheet.range("AK40:AN40").value(dobleaguinaldo);
+
+    // Modificar el calculo de vacaciones
+    sheet.range("AC41:AE41").value(calculoVacaciones.diasAcumulados);
+    sheet.range("AK41:AN41").value(calculoVacaciones.vacacionesPorPagar);
 
     // 📌 Guardar el archivo en memoria
     const modifiedBuffer = await workbook.outputAsync();

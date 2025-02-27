@@ -16,13 +16,15 @@ export default function FormularioDatos() {
     domicilioEmpresa: "",
     nombreTrabajador: "",
     domicilioTrabajador: "",
-    estadoCivil: "",
+    estadoCivil: "Soltero",
     fechaNacimiento: "",
     profesion: "",
-    motivoRetiro: "",
+    motivoRetiro: "Voluntario",
     remuneracionMensual: "",
     fechaInicio: "",
     fechaFin: "",
+    cedula:"",
+    edad:"",
   });
   const [fechas, setFechas] = useState({ años: 0, meses: 0, días: 0 });
   const [meses, setMeses] = useState({
@@ -49,6 +51,19 @@ export default function FormularioDatos() {
   //doble aguinaldo
   const [dobleformData2, setDobleFormData2] = useState({ meses: "", dias: "" });
   const [dobleaguinaldo, setDobleAguinaldo] = useState(0);
+
+  const [fechasResultados,setFechasResultados] = useState({
+    añoResultado:0,
+    mesResultado:0,
+    diaResultado:0,
+  })
+
+  const [calculoVacaciones,setCalculoVacaciones] = useState({
+    diasAcumulados:0,
+    calculoSalarioDiario:0,
+    vacacionesPorPagar:0,
+
+  })
   //handleChange/////////////////////////////////////
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,6 +117,8 @@ export default function FormularioDatos() {
       aguinaldo,
       dobleformData2,
       dobleaguinaldo,
+      fechasResultados,
+      calculoVacaciones,
     };
   
     const response = await fetch("/api/modificarExcel", {
@@ -120,7 +137,7 @@ export default function FormularioDatos() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "archivo_modificado.xlsx";
+    a.download = "segunda_hoja_modificada.xlsx";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -189,6 +206,45 @@ export default function FormularioDatos() {
     
     setDobleAguinaldo(resultado.toFixed(2)); // Redondear a 2 decimales
   }, [dobleformData2.meses, dobleformData2.dias, meses.promedio]);
+
+  useEffect(() => {
+    const añosR = (meses.promedio)*(fechas.años);
+    const mesesR = ((meses.promedio /12) *(fechas.meses)).toFixed(2);
+    const diasR = ((meses.promedio / 360)*(fechas.días)).toFixed(2);
+    setFechasResultados({
+      añoResultado:añosR,
+      mesResultado:mesesR,
+      diaResultado:diasR,
+    })
+  },[meses,fechas])
+
+  useEffect(() => {
+    let cDias = 0;
+    let cVacaciones = 0;
+  
+    if (
+      fechaVacaciones?.diasTotales &&
+      meses?.promedio &&
+      diasVaca &&
+      fechaVacaciones.diasTotales !== 0 &&
+      meses.promedio !== 0
+    ) {
+      cDias = (fechaVacaciones.diasTotales / (365 / diasVaca)).toFixed(2);
+      cVacaciones = (
+        (fechaVacaciones.diasTotales / (365 / diasVaca)) *
+        (meses.promedio / 30)
+      ).toFixed(2);
+    }
+  
+    const cSalario = (meses.promedio / 30).toFixed(2);
+  
+    setCalculoVacaciones({
+      diasAcumulados: isNaN(cDias) ? 0 : cDias,
+      calculoSalarioDiario: isNaN(cSalario) ? 0 : cSalario,
+      vacacionesPorPagar: isNaN(cVacaciones) ? 0 : cVacaciones,
+    });
+  }, [meses.promedio, diasVaca, fechaVacaciones.diasTotales]);
+  
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -298,6 +354,28 @@ export default function FormularioDatos() {
             onChange={handleChange}
             type="number"
             placeholder="8000"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
+        </label>
+        <label className="block">
+          <span className="text-gray-700">Cedula</span>
+          <input
+            name="cedula"
+            value={formData.cedula}
+            onChange={handleChange}
+            type="text"
+            placeholder="carnet de identidad"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
+        </label>
+        <label className="block">
+          <span className="text-gray-700">Edad</span>
+          <input
+            name="edad"
+            value={formData.edad}
+            onChange={handleChange}
+            type="number"
+            placeholder="Edad"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
           />
         </label>
@@ -438,7 +516,7 @@ export default function FormularioDatos() {
         </div>
           {/*CALCULO DE AÑO*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
-          <span className="font-bold text-black">{(meses.promedio)*(fechas.años)}</span>
+          <span className="font-bold text-black">{fechasResultados.añoResultado}</span>
         </div>
           {/*RESULTADO DE MESES*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
@@ -450,7 +528,7 @@ export default function FormularioDatos() {
         </div>
           {/*CALCULO DE MESES*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
-           <span className="font-bold text-black">{((meses.promedio /12) *(fechas.meses)).toFixed(2)}</span>
+           <span className="font-bold text-black">{fechasResultados.mesResultado}</span>
         </div>
           {/*RESULTADO DE DIAS*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
@@ -460,9 +538,9 @@ export default function FormularioDatos() {
         <div className="bg-green-200 p-4 border-2 border-black text-black">
           DIAS
         </div>
-          {/*RESULTADO DE DIAS*/}
+          {/*CALCULO DE DIAS*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
-          <span className="font-bold text-black">{((meses.promedio / 360)*(fechas.días)).toFixed(2)}</span>
+          <span className="font-bold text-black">{fechasResultados.diaResultado}</span>
         </div>
       </div>
       <form className="grid grid-rows-2 gap-4">
@@ -565,28 +643,22 @@ export default function FormularioDatos() {
       <span className="text-red-700">Calculo de dias acumulados</span>
       <div className="grid grid-cols-2">
   <span className="text-gray-700">DÍAS ACUMULADOS DE VACACIÓN (días)</span>
-  <span className="text-gray-700 text-center">
-    {Number.isFinite(fechaVacaciones?.diasTotales) && diasVaca > 0
-      ? (fechaVacaciones.diasTotales / (365 / diasVaca)).toFixed(2)
-      : "0"}
-  </span>
+  <div className="text-gray-700 text-center">
+    {calculoVacaciones.diasAcumulados}
+  </div>
 </div>
 
 <div className="grid grid-cols-2">
   <span className="text-gray-700">CÁLCULO DE SALARIO DIARIO (Bs)</span>
-  <span className="text-gray-700 text-center">
-    {Number.isFinite(Number(meses?.promedio)) 
-      ? (Number(meses.promedio) / 30).toFixed(2) 
-      : "0"}
-  </span>
+  <div className="text-gray-700 text-center">
+    {calculoVacaciones.calculoSalarioDiario}
+  </div>
 </div>
 
 <div className="grid grid-cols-2">
   <span className="text-gray-700">VACACIONES POR PAGAR (Bs.)</span>
   <span className="text-gray-700 text-center">
-    {Number.isFinite(Number(meses?.promedio)) && Number.isFinite(Number(fechaVacaciones?.diasTotales)) && diasVaca > 0
-      ? ((Number(fechaVacaciones.diasTotales) / (365 / diasVaca)) * (Number(meses.promedio) / 30)).toFixed(2)
-      : "0"}
+    {calculoVacaciones.vacacionesPorPagar}
   </span>
 </div>
 
