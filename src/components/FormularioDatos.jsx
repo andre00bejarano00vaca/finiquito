@@ -172,10 +172,10 @@ export default function FormularioDatos() {
   }, [meses.mes1, meses.mes2, meses.mes3]);
 
   useEffect(() => {
-    if ((fechas.años !== undefined)&&(meses.promedio !==undefined)) {
-      setDiasVaca(diasVacaciones(fechas.años,meses.promedio));
+    if (fechas.años !== undefined) {
+      setDiasVaca(diasVacaciones(fechas.años));
     }
-  }, [fechas,meses.promedio]); // Se ejecuta cuando `fechas` cambia
+  }, [fechas]); // Se ejecuta cuando `fechas` cambia
 
   useEffect(()=>{
     if((fechaVacaciones.inicio !== undefined)&&(fechaVacaciones.final !==undefined)){

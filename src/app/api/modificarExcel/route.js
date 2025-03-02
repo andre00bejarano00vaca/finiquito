@@ -103,10 +103,10 @@ export async function POST(req) {
     sheet.range("U24:AA24").value(fechaMes.fechaMes2);
     sheet.range("AB24:AH24").value(fechaMes.fechaMes3);
 
-    // 📌 Modificar vacaciones
-    sheet.cell("B48").value(fechaVacaciones.inicio);
-    sheet.cell("B49").value(fechaVacaciones.final);
-    sheet.cell("B49").value(diasVaca);
+    // // 📌 Modificar vacaciones (censurado por si las moscas XD)
+    // sheet.cell("B48").value(fechaVacaciones.inicio);
+    // sheet.cell("B49").value(fechaVacaciones.final);
+    // sheet.cell("B49").value(diasVaca);
 
     // 📌 Modificar aguinaldo y doble aguinaldo
     sheet.range("V39:X39").value(formData2.meses);

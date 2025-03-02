@@ -1,4 +1,4 @@
-const diasVacaciones = (años,promedio) => {
+const diasVacaciones = (años) => {
     switch (true) {
       case años < 6 && años>0:
         return 15;
