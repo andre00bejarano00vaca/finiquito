@@ -28,9 +28,9 @@ export default function FormularioDatos() {
   });
   const [fechas, setFechas] = useState({ años: 0, meses: 0, días: 0 });
   const [meses, setMeses] = useState({
-    mes1: 0,
-    mes2: 0,
-    mes3: 0,
+    mes1: "",
+    mes2: "",
+    mes3: "",
     promedio: 0,
     totales: 0,
   });
