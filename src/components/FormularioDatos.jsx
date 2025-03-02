@@ -434,7 +434,7 @@ export default function FormularioDatos() {
               name="fechaMes1"
               value={fechaMes.fechaMes1}
               onChange={handleChange3}
-              type="date"
+              type="month"
               className="mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
             />
           </label>
@@ -454,7 +454,7 @@ export default function FormularioDatos() {
               name="fechaMes2"
               value={fechaMes.fechaMes2}
               onChange={handleChange3}
-              type="date"
+              type="month"
               className="mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
             />
           </label>
@@ -474,7 +474,7 @@ export default function FormularioDatos() {
               name="fechaMes3"
               value={fechaMes.fechaMes3}
               onChange={handleChange3}
-              type="date"
+              type="month"
               className="mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
               placeholder="14-02-2025"
             />
