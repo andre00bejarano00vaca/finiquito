@@ -244,6 +244,17 @@ export default function FormularioDatos() {
       vacacionesPorPagar: isNaN(cVacaciones) ? 0 : cVacaciones,
     });
   }, [meses.promedio, diasVaca, fechaVacaciones.diasTotales]);
+
+  //calculo de edad
+  useEffect(()=>{
+
+      const birthYear = dayjs(formData.fechaNacimiento);
+      const currentAge = dayjs().diff(birthYear, "year"); // Calcula la diferencia en años
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        edad:currentAge ,
+      }));
+  },[formData.fechaNacimiento])
   
 
   return (
