@@ -15,7 +15,7 @@ export async function POST(req) {
     // Configurar la cookie de autenticación
     response.headers.set(
       "Set-Cookie",
-      `auth=${contra}; Path=/; Max-Age=3600; HttpOnly; Secure; SameSite=Strict`
+      `auth=${contra}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`
     );
 
     return response;
