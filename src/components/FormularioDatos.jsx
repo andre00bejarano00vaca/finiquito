@@ -640,24 +640,24 @@ export default function FormularioDatos() {
           </div>
         </div>
       </form>
-      <span className="text-red-700">Calculo de dias acumulados</span>
+      <div className="text-red-700 border border-black text-center">Calculo de dias acumulados</div>
       <div className="grid grid-cols-2">
-  <span className="text-gray-700">DÍAS ACUMULADOS DE VACACIÓN (días)</span>
-  <div className="text-gray-700 text-center">
+  <span className="text-gray-700 border border-black">DÍAS ACUMULADOS DE VACACIÓN (días)</span>
+  <div className="text-gray-700 border border-black text-center">
     {calculoVacaciones.diasAcumulados}
   </div>
 </div>
 
 <div className="grid grid-cols-2">
-  <span className="text-gray-700">CÁLCULO DE SALARIO DIARIO (Bs)</span>
-  <div className="text-gray-700 text-center">
+  <span className="text-gray-700 border border-black">CÁLCULO DE SALARIO DIARIO (Bs)</span>
+  <div className="text-gray-700 border border-black text-center">
     {calculoVacaciones.calculoSalarioDiario}
   </div>
 </div>
 
 <div className="grid grid-cols-2">
-  <span className="text-gray-700">VACACIONES POR PAGAR (Bs.)</span>
-  <span className="text-gray-700 text-center">
+  <span className="text-gray-700 border border-black">VACACIONES POR PAGAR (Bs.)</span>
+  <span className="text-gray-700 border border-black text-center">
     {calculoVacaciones.vacacionesPorPagar}
   </span>
 </div>

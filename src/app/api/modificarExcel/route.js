@@ -93,7 +93,12 @@ export async function POST(req) {
     sheet.range("AD25:AH25").value(meses.mes3);
     sheet.range("AK25:AN25").value(meses.totales);
     sheet.range("AK33:AO33").value(meses.promedio);
-    sheet.range("AK35:AN35").value(meses.totales);
+    if(formData.motivoRetiro === "Forzoso"){
+      sheet.range("AK35:AN35").value(meses.totales);
+    }else{
+      sheet.range("AK35:AN35").value(0);
+      sheet.range("AA35:AH35").value("NO CORRESPONDE");
+    }
 
     sheet.range("AK43:AN43").value(0);
 
