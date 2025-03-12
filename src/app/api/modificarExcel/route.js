@@ -83,9 +83,9 @@ export async function POST(req) {
     sheet.range("V37:X37").value(fechas.meses);
     sheet.range("V38:X38").value(fechas.días);
     // 📌 Modificar celdas de los calculos de los promedios año, mes y dia
-    sheet.range("AE36:AH36").value(Number(fechasResultados.añoResultado));
-    sheet.range("AE37:AH37").value(Number(fechasResultados.mesResultado));
-    sheet.range("AE38:AH38").value(Number(fechasResultados.diaResultado));
+    sheet.cell("AE36").value(Number(fechasResultados.añoResultado));
+    sheet.cell("AE37").value(Number(fechasResultados.mesResultado));
+    sheet.cell("AE38").value(Number(fechasResultados.diaResultado));
     // sheet.range("AK38:AN38").value(
     //   Number(fechasResultados.añoResultado) + 
     //   Number(fechasResultados.mesResultado) + 
@@ -99,7 +99,7 @@ export async function POST(req) {
     sheet.range("AK25:AN25").value(meses.totales);
     sheet.range("AK33:AO33").value(meses.promedio);
     if(formData.motivoRetiro === "Forzoso"){
-      sheet.range("AK35:AN35").value(Number(meses.totales));
+      sheet.cell("AK35").value(Number(meses.totales));
     }else{
       sheet.range("AK35:AN35").value(0);
       sheet.range("AA35:AH35").value("NO CORRESPONDE");
@@ -121,24 +121,15 @@ export async function POST(req) {
     // 📌 Modificar aguinaldo y doble aguinaldo
     sheet.range("V39:X39").value(formData2.meses);
     sheet.range("AC39:AE39").value(formData2.dias);
-    sheet.range("AK39:AN39").style("numberFormat", "General");
-    sheet.range("AK39:AN39").value(Number(5)).style("numberFormat", "#,##0.00");
-
-    console.log(typeof Number(aguinaldo))
+    sheet.cell("AK39").value(Number(aguinaldo));
 
     sheet.range("V40:X40").value(dobleformData2.meses);
     sheet.range("AC40:AE40").value(dobleformData2.dias);
-    sheet.range("AK40:AN40").style("numberFormat", "General");
-    sheet.range("AK40:AN40").value(Number(5)).style("numberFormat", "#,##0.00");
-
-    console.log(typeof Number(dobleaguinaldo))
+    sheet.cell("AK40").value(Number(dobleaguinaldo));
 
     // Modificar el calculo de vacaciones
     sheet.range("AC41:AE41").value(calculoVacaciones.diasAcumulados);
-    sheet.range("AK41:AN41").style("numberFormat", "General");
-    sheet.range("AK41:AN41").value(Number(55)).style("numberFormat", "#,##0.00");
-
-    console.log(typeof Number(calculoVacaciones.vacacionesPorPagar))
+    sheet.cell("AK41").value(Number(calculoVacaciones.vacacionesPorPagar));
 
     // 📌 Guardar el archivo en memoria
     const modifiedBuffer = await workbook.outputAsync();
