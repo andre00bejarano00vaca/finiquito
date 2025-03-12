@@ -167,7 +167,7 @@ export default function FormularioDatos() {
       const promedio = ((mes1 + mes2 + mes3) / 3).toFixed(2);
       const totales = mes1 + mes2 + mes3;
   
-      setMeses((prev) => ({ ...prev, promedio: Number(promedio), totales }));
+      setMeses((prev) => ({ ...prev, promedio: Number(promedio), totales: Number(totales) }));
     }
   }, [meses.mes1, meses.mes2, meses.mes3]);
 
