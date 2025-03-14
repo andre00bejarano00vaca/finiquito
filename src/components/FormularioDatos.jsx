@@ -75,6 +75,7 @@ export default function FormularioDatos() {
 
   const handleChange2 = (e) => {
     const { name, value } = e.target;
+    console.log(value);
   if(value == 0){
     setMeses((prevFormData) => ({
       ...prevFormData,
@@ -83,7 +84,7 @@ export default function FormularioDatos() {
   }else{
     setMeses((prevFormData) => ({
       ...prevFormData,
-      [name]: Number(value) ,
+      [name]: value,
     }));
   }
   };
@@ -166,16 +167,21 @@ export default function FormularioDatos() {
     }
   }, [formData.fechaInicio, formData.fechaFin]);
   
-
+  // Convertir a número solo en los cálculos
   useEffect(() => {
     const { mes1, mes2, mes3 } = meses;
     if (mes1 !== '' && mes2 !== '' && mes3 !== '') {
-      const promedio = Number(((mes1 + mes2 + mes3) / 3).toFixed(2));
-      const totales = mes1 + mes2 + mes3;
+      const numMes1 = Number(mes1);
+      const numMes2 = Number(mes2);
+      const numMes3 = Number(mes3);
   
-      setMeses((prev) => ({ ...prev, promedio: Number(promedio), totales: Number(totales) }));
+      const promedio = Number(((numMes1 + numMes2 + numMes3) / 3).toFixed(2));
+      const totales = numMes1 + numMes2 + numMes3;
+  
+      setMeses((prev) => ({ ...prev, promedio, totales }));
     }
   }, [meses.mes1, meses.mes2, meses.mes3]);
+  
 
   useEffect(() => {
     if (fechas.años !== undefined) {
@@ -508,7 +514,7 @@ export default function FormularioDatos() {
 
       <div className="grid grid-cols-2 gap-4 text-center m-5">
         <div className="bg-green-200 p-4 rounded-lg text-black">
-          Promedio:{" "}
+          Promedio:
           <span className="font-bold text-black">{meses.promedio}</span>
         </div>
         <div className="bg-green-200 p-4 rounded-lg text-black">
