@@ -464,7 +464,6 @@ export default function FormularioDatos() {
             name="mes1"
             value={meses.mes1}
             onChange={handleChange2}
-            key={meses.mes1}
             type="number"
             placeholder="Mes 1:"
             className="bg-green-200 w-full !bg-green-200 p-4 rounded-lg text-black"
@@ -484,7 +483,6 @@ export default function FormularioDatos() {
           <input
             name="mes2"
             value={meses.mes2}
-            key={meses.mes2}
             onChange={handleChange2}
             type="number"
             placeholder="Mes 2:"
@@ -506,7 +504,6 @@ export default function FormularioDatos() {
           <input
             name="mes3"
             value={meses.mes3}
-            key={meses.mes3}
             onChange={handleChange2}
             type="number"
             placeholder="Mes 3:"
