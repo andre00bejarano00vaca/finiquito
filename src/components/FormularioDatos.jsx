@@ -31,8 +31,8 @@ export default function FormularioDatos() {
     mes1: "",
     mes2: "",
     mes3: "",
-    promedio: 0,
-    totales: 0,
+    promedio: "",
+    totales: "",
   });
   const [fechaMes,setFechaMes] = useState({
     fechaMes1: "",
@@ -162,7 +162,7 @@ export default function FormularioDatos() {
 
   useEffect(() => {
     const { mes1, mes2, mes3 } = meses;
-    if (mes1 > 0 && mes2 > 0 && mes3 > 0) {
+    if (mes1 !== '' && mes2 !== '' && mes3 !== '') {
       const promedio = Number(((mes1 + mes2 + mes3) / 3).toFixed(2));
       const totales = mes1 + mes2 + mes3;
   
