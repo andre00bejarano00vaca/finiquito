@@ -162,9 +162,8 @@ export default function FormularioDatos() {
 
   useEffect(() => {
     const { mes1, mes2, mes3 } = meses;
-  
     if (mes1 > 0 && mes2 > 0 && mes3 > 0) {
-      const promedio = ((mes1 + mes2 + mes3) / 3).toFixed(2);
+      const promedio = Number(((mes1 + mes2 + mes3) / 3).toFixed(2));
       const totales = mes1 + mes2 + mes3;
   
       setMeses((prev) => ({ ...prev, promedio: Number(promedio), totales: Number(totales) }));
@@ -193,8 +192,7 @@ export default function FormularioDatos() {
 
     const resultado =
       (meses.promedio / 12) * mesesInput + (meses.promedio / 360) * diasInput;
-    
-    setAguinaldo(resultado.toFixed(2)); // Redondear a 2 decimales
+    setAguinaldo(Number(resultado.toFixed(2))); // Redondear a 2 decimales
   }, [formData2.meses, formData2.dias, meses.promedio]);
 
   useEffect(() => {
@@ -203,14 +201,14 @@ export default function FormularioDatos() {
 
     const resultado =
       (meses.promedio / 12) * mesesInput + (meses.promedio / 360) * diasInput;
-    
     setDobleAguinaldo(resultado.toFixed(2)); // Redondear a 2 decimales
   }, [dobleformData2.meses, dobleformData2.dias, meses.promedio]);
 
   useEffect(() => {
-    const añosR = (meses.promedio)*(fechas.años);
-    const mesesR = ((meses.promedio /12) *(fechas.meses)).toFixed(2);
-    const diasR = ((meses.promedio / 360)*(fechas.días)).toFixed(2);
+    
+    const añosR = Number((meses.promedio)*(fechas.años));
+    const mesesR = Number(((meses.promedio /12) *(fechas.meses)).toFixed(2));
+    const diasR = Number(((meses.promedio / 360)*(fechas.días)).toFixed(2));
     setFechasResultados({
       añoResultado:añosR,
       mesResultado:mesesR,
@@ -221,6 +219,7 @@ export default function FormularioDatos() {
   useEffect(() => {
     let cDias = 0;
     let cVacaciones = 0;
+    let cSalario
   
     if (
       fechaVacaciones?.diasTotales &&
@@ -229,14 +228,13 @@ export default function FormularioDatos() {
       fechaVacaciones.diasTotales !== 0 &&
       meses.promedio !== 0
     ) {
-      cDias = (fechaVacaciones.diasTotales / (365 / diasVaca)).toFixed(2);
-      cVacaciones = (
-        (fechaVacaciones.diasTotales / (365 / diasVaca)) *
-        (meses.promedio / 30)
-      ).toFixed(2);
+      cSalario = Number((meses.promedio / 30).toFixed(2));
+      cDias = Number((fechaVacaciones.diasTotales / (365 / diasVaca)).toFixed(2));
+      cVacaciones = Number((
+        cSalario * cDias
+      ).toFixed(2));
     }
   
-    const cSalario = (meses.promedio / 30).toFixed(2);
   
     setCalculoVacaciones({
       diasAcumulados: isNaN(cDias) ? 0 : cDias,
