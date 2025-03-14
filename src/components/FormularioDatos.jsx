@@ -75,10 +75,17 @@ export default function FormularioDatos() {
 
   const handleChange2 = (e) => {
     const { name, value } = e.target;
+  if(value == 0){
     setMeses((prevFormData) => ({
       ...prevFormData,
-      [name]: value === "" ? 0 : Number(value),
+      [name]: '' ,
     }));
+  }else{
+    setMeses((prevFormData) => ({
+      ...prevFormData,
+      [name]: Number(value) ,
+    }));
+  }
   };
 
   const handleChange3 = (e) =>{
