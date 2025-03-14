@@ -610,7 +610,7 @@ export default function FormularioDatos() {
         </div>
           {/*Días Vacac.*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
-        Días Vacac.
+        Días Vacaciones
         </div>
           {/*MOSTRAR DE VACACIONES AÑO*/}
         <div className="bg-green-200 p-4 border-2 border-black text-black">
