@@ -41,9 +41,9 @@ export default function FormularioDatos() {
   });
 
   const [fechaVacaciones,setFechaVacaciones]= useState({
-    inicio:'',
-    final:'',
-    diasTotales:0,
+    inicio: "",
+    final: "",
+    diasTotales: "",
   });
   //aguinaldo
   const [formData2, setFormData2] = useState({ meses: "", dias: "" });
@@ -98,10 +98,12 @@ export default function FormularioDatos() {
   };
   
   const handleFechasVacaciones = (e) => {
+    e.prevDefauldValue
     const { name, value } = e.target;
+    console.log(value)
     setFechaVacaciones((prevFormData) => ({
       ...prevFormData,
-      [name]: value ,
+      [name]: value,
     }));
   }
   const handleAguinaldo = (e) => {
@@ -242,7 +244,7 @@ export default function FormularioDatos() {
       meses.promedio !== 0
     ) {
       cSalario = Number((meses.promedio / 30).toFixed(2));
-      cDias = Number((fechaVacaciones.diasTotales / (365 / diasVaca)).toFixed(2));
+      cDias = Number((Number(fechaVacaciones.diasTotales) / (365 / diasVaca)).toFixed(2));
       cVacaciones = Number((
         cSalario * cDias
       ).toFixed(2));
@@ -658,7 +660,14 @@ export default function FormularioDatos() {
         <div className="block text-center">
           <span className="text-gray-700">Dias</span>
           <div>
-          <span className="text-gray-900">{isNaN(fechaVacaciones.diasTotales) ? 0 : fechaVacaciones.diasTotales}</span>
+          <input
+            name="diasTotales"
+            value={isNaN(fechaVacaciones.diasTotales) ? '' : fechaVacaciones.diasTotales}
+            onChange={handleFechasVacaciones}
+            type="text"
+            placeholder="Dias de vacaciones"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          />
           </div>
         </div>
       </form>
