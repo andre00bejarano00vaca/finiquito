@@ -5,12 +5,13 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import diasVacaciones from "@/functions/diasVacaciones";
 import calcularDiferenciaEnDias from "@/functions/calcularDiferenciaEnDia";
+import ToggleSwitch from "./Switch";
 dayjs.extend(duration);
 
 export default function FormularioDatos() {
   //ESTADOS /////////////////////////
   const [diasVaca,setDiasVaca] = useState(0)
-
+  const [enabled, setEnabled] = useState(false);
   const [formData, setFormData] = useState({
     razonSocial: "",
     domicilioEmpresa: "",
@@ -59,7 +60,7 @@ export default function FormularioDatos() {
   })
 
   const [calculoVacaciones,setCalculoVacaciones] = useState({
-    diasAcumulados:0,
+    diasAcumulados:"",
     calculoSalarioDiario:0,
     vacacionesPorPagar:0,
 
@@ -113,6 +114,11 @@ export default function FormularioDatos() {
   const handleDobleAguinaldo = (e) => {
     const { name, value } = e.target;
     setDobleFormData2((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCalculoDias = (e) => {
+    const { value } = e.target;
+    setCalculoVacaciones((prev) => ({ ...prev, diasAcumulados: value }));
   };
   
   const enviarDatos = async () => {
@@ -231,7 +237,7 @@ export default function FormularioDatos() {
     })
   },[meses.promedio,fechas])
 
-  useEffect(() => {
+  {enabled? useEffect(() => {
     let cDias = 0;
     let cVacaciones = 0;
     let cSalario
@@ -256,7 +262,28 @@ export default function FormularioDatos() {
       calculoSalarioDiario: isNaN(cSalario) ? 0 : cSalario,
       vacacionesPorPagar: isNaN(cVacaciones) ? 0 : cVacaciones,
     });
-  }, [meses.promedio, diasVaca, fechaVacaciones.diasTotales]);
+  }, [meses.promedio, diasVaca, fechaVacaciones.diasTotales]): 
+  useEffect(() => {
+    let cVacaciones = 0;
+    let cSalario
+  
+    if (
+      meses?.promedio &&
+      diasVaca &&
+      meses.promedio !== 0
+    ) {
+      cSalario = Number((meses.promedio / 30).toFixed(2));
+      cVacaciones = Number((cSalario * Number(calculoVacaciones.diasAcumulados)).toFixed(2));
+    }
+  
+  
+    setCalculoVacaciones((prev)=>({ 
+      ...prev,
+      calculoSalarioDiario: isNaN(cSalario) ? 0 : cSalario,
+      vacacionesPorPagar: isNaN(cVacaciones) ? 0 : cVacaciones,
+    }));
+  }, [meses.promedio, diasVaca, calculoVacaciones.diasAcumulados]);}
+
 
   //calculo de edad
   useEffect(()=>{
@@ -635,8 +662,13 @@ export default function FormularioDatos() {
         <div className="bg-green-200 p-4 border-2 border-black text-black">
           <span className="font-bold text-black">{diasVaca}</span>
         </div>
+        <div>
+          <input type="chek" />
+        </div>
       </div>
-        <form className="grid grid-cols-3 gap-4">
+        <ToggleSwitch  enabled={enabled} setEnabled={setEnabled} />
+        <div >
+        {enabled ? <form className="grid grid-cols-3 gap-4">
         <label className="block">
           <span className="text-gray-700">Fecha de Inicio</span>
           <input
@@ -670,7 +702,16 @@ export default function FormularioDatos() {
           />
           </div>
         </div>
-      </form>
+      </form> : <div className="text-black">cuantos dias de vacaciones te deben?: <input
+            name="diasAcumulados"
+            value={isNaN(calculoVacaciones.diasAcumulados) ? '' : calculoVacaciones.diasAcumulados}
+            onChange={handleCalculoDias}
+            type="text"
+            placeholder="EDias"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-black"
+          /></div>}
+      </div>
+        
       <div className="text-red-700 border border-black text-center">Calculo de dias acumulados</div>
       <div className="grid grid-cols-2">
   <span className="text-gray-700 border border-black">DÍAS ACUMULADOS DE VACACIÓN (días)</span>

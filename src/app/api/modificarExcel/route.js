@@ -128,7 +128,7 @@ export async function POST(req) {
     sheet.cell("AK40").value(Number(dobleaguinaldo));
 
     // Modificar el calculo de vacaciones
-    sheet.range("AC41:AE41").value(calculoVacaciones.diasAcumulados);
+    sheet.range("AC41:AE41").value(Number(calculoVacaciones.diasAcumulados));
     sheet.cell("AK41").value(Number(calculoVacaciones.vacacionesPorPagar));
 
     // 📌 Guardar el archivo en memoria
